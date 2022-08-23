@@ -1,5 +1,6 @@
 import { Inject } from "@nestjs/common";
 import { RedlockAbortSignal, Settings } from "redlock";
+import { DEFAULT_DURATION } from "./redis-redlock.constants";
 import { GenerateResourceFunc } from "./redis-redlock.interface";
 import { RedisRedlockService } from "./redis-redlock.service";
 
@@ -26,7 +27,7 @@ export function RedisRedlock(
 
       return await redisRedlockService.using(
         resources,
-        duration || redisRedlockService.options?.duration || 5000,
+        duration || redisRedlockService.options?.duration || DEFAULT_DURATION,
         settings,
         async (signal: RedlockAbortSignal) => {
           const result = await originalMethod.apply(descriptorThis, args);
