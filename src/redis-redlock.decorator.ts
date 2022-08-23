@@ -26,7 +26,7 @@ export function RedisRedlock(
 
       return await redisRedlockService.using(
         resources,
-        duration || redisRedlockService.options.duration || 5000,
+        duration || redisRedlockService.options?.duration || 5000,
         settings,
         async (signal: RedlockAbortSignal) => {
           const result = await originalMethod.apply(descriptorThis, args);
