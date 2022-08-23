@@ -57,6 +57,7 @@ import { RedisRedlock } from "@anchan828/nest-redlock";
 
 @Injectable()
 export class ExampleService {
+  // The arguments define the class object to which the decorator is being added and the method arguments in order.
   @RedisRedlock((target: ExampleService, projectId: number, comment: string) => `projects/${projectId}/comments`)
   public async addComment(projectId: number, comment: string): Promise<void> {}
 }
