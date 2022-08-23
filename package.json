@@ -17,7 +17,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "format": "prettier --write '**/*.{js,json,yml,yaml,md}'",
-    "postinstall": "husky install",
+    "prepare": "husky install",
     "lint": "TIMING=1 eslint --ignore-path .eslintignore '**/*.ts'",
     "lint:fix": "npm run lint -- --fix",
     "test": "jest --coverage --runInBand"
