@@ -3,7 +3,7 @@
 ![npm](https://img.shields.io/npm/v/@anchan828/nest-redlock.svg)
 ![NPM](https://img.shields.io/npm/l/@anchan828/nest-redlock.svg)
 
-This is a [Nest](https://github.com/nestjs/nest) implementation of the redlock algorithm for distributed redis.
+This is a [Nest](https://github.com/nestjs/nest) implementation of the redlock algorithm for distributed redis locks.
 
 This package uses [node-redlock](https://github.com/mike-marcacci/node-redlock).
 
