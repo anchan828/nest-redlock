@@ -20,7 +20,16 @@ export class RedisRedlockModule extends ConfigurableModuleClass implements OnMod
 
   public async onModuleDestroy(): Promise<void> {
     for (const client of this.options.clients) {
-      await client.quit();
+      switch (client.status) {
+        case "end":
+          continue;
+        case "ready":
+          await client.quit();
+          break;
+        default:
+          client.disconnect();
+          break;
+      }
     }
   }
 }
