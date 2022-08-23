@@ -108,6 +108,16 @@ export class ExampleService {
 }
 ```
 
+## Using the RedisRedlockService mock
+
+If you do not want to use Redis in your Unit tests, define the mock class as RedisRedlockService.
+
+```ts
+const app = await Test.createTestingModule({
+  providers: [TestService, { provide: RedisRedlockService, useClass: MockRedisRedlockService }],
+}).compile();
+```
+
 ## Troubleshooting
 
 ### Nest can't resolve dependencies of the XXX. Please make sure that the "@redisRedlockService" property is available in the current context.
@@ -126,6 +136,16 @@ import Redis from "ioredis";
   ],
 })
 export class AppModule {}
+```
+
+#### What should I do with Unit tests, I don't want to use Redis.
+
+Use `MockRedisRedlockService` class. Register MockRedisRedlockService with the provider as RedisRedlockService.
+
+```ts
+const app = await Test.createTestingModule({
+  providers: [TestService, { provide: RedisRedlockService, useClass: MockRedisRedlockService }],
+}).compile();
 ```
 
 ## License
