@@ -58,7 +58,7 @@ See [node-redlock](https://github.com/mike-marcacci/node-redlock) for more infor
 
 ## Define complex resources (lock keys)
 
-Using constants causes the same lock key to be used for all calls. Let's reduce the range a bit more.
+Using constants causes the same lock key to be used for all calls. Let's reduce the scope a bit more.
 
 In this example, only certain projects are now locked.
 
