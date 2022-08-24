@@ -1,19 +1,19 @@
 import { Test } from "@nestjs/testing";
 import Redis from "ioredis";
 import { setTimeout } from "timers/promises";
-import { RedisRedlock } from "./redis-redlock.decorator";
-import { RedisRedlockModule } from "./redis-redlock.module";
+import { Redlock } from "./redlock.decorator";
+import { RedlockModule } from "./redlock.module";
 
-describe("RedisRedlock", () => {
+describe("Redlock", () => {
   let client: Redis;
 
   beforeEach(async () => {
     client = new Redis({ host: "localhost" });
   });
 
-  it("should throw error - RedisRedlockModule not imported", async () => {
+  it("should throw error - RedlockModule not imported", async () => {
     class TestService {
-      @RedisRedlock("test")
+      @Redlock("test")
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       public async testMethod(): Promise<void> {}
     }
@@ -31,18 +31,18 @@ describe("RedisRedlock", () => {
     const messages: string[] = [];
 
     class TestService {
-      @RedisRedlock("test1")
+      @Redlock("test1")
       public async testMethod1(): Promise<number> {
         await setTimeout(500);
         return messages.push("testMethod1");
       }
 
-      @RedisRedlock("test1")
+      @Redlock("test1")
       public async testMethod2(): Promise<number> {
         return messages.push("testMethod2");
       }
 
-      @RedisRedlock("test2")
+      @Redlock("test2")
       public async testMethod3(): Promise<number> {
         return messages.push("testMethod3");
       }
@@ -50,7 +50,7 @@ describe("RedisRedlock", () => {
 
     const app = await Test.createTestingModule({
       imports: [
-        RedisRedlockModule.register({
+        RedlockModule.register({
           clients: [client],
         }),
       ],
@@ -85,7 +85,7 @@ describe("RedisRedlock", () => {
     const messages: Array<{ id: number; text: string }> = [];
 
     class TestService {
-      @RedisRedlock((target: TestService, args: Array<{ id: number; text: string }>) =>
+      @Redlock((target: TestService, args: Array<{ id: number; text: string }>) =>
         args.map((arg) => `resources/${arg.id}`),
       )
       public async testMethod(args: Array<{ id: number; text: string }>, delay = 0): Promise<number> {
@@ -96,7 +96,7 @@ describe("RedisRedlock", () => {
 
     const app = await Test.createTestingModule({
       imports: [
-        RedisRedlockModule.register({
+        RedlockModule.register({
           clients: [client],
         }),
       ],

@@ -1,9 +1,9 @@
 import { Test } from "@nestjs/testing";
 import Redis from "ioredis";
-import { RedisRedlockModule } from "./redis-redlock.module";
-import { RedisRedlockService } from "./redis-redlock.service";
+import { RedlockModule } from "./redlock.module";
+import { RedlockService } from "./redlock.service";
 
-describe("RedisRedlockModule", () => {
+describe("RedlockModule", () => {
   let client: Redis;
 
   beforeEach(async () => {
@@ -15,14 +15,14 @@ describe("RedisRedlockModule", () => {
     it("should compile", async () => {
       const app = await Test.createTestingModule({
         imports: [
-          RedisRedlockModule.register({
+          RedlockModule.register({
             clients: [client],
             duration: 1000,
           }),
         ],
       }).compile();
       expect(app).toBeDefined();
-      expect(app.get(RedisRedlockService)).toBeDefined();
+      expect(app.get(RedlockService)).toBeDefined();
       await app.close();
     });
   });
@@ -31,7 +31,7 @@ describe("RedisRedlockModule", () => {
     it("should compile", async () => {
       const app = await Test.createTestingModule({
         imports: [
-          RedisRedlockModule.registerAsync({
+          RedlockModule.registerAsync({
             useFactory: () => ({
               clients: [client],
               duration: 1000,
@@ -40,7 +40,7 @@ describe("RedisRedlockModule", () => {
         ],
       }).compile();
       expect(app).toBeDefined();
-      expect(app.get(RedisRedlockService)).toBeDefined();
+      expect(app.get(RedlockService)).toBeDefined();
       await app.close();
     });
   });

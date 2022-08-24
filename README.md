@@ -18,12 +18,12 @@ $ npm i --save @anchan828/nest-redlock ioredis
 ### 1. Import module
 
 ```ts
-import { RedisRedlockModule } from "@anchan828/nest-redlock";
+import { RedlockModule } from "@anchan828/nest-redlock";
 import Redis from "ioredis";
 
 @Module({
   imports: [
-    RedisRedlockModule.register({
+    RedlockModule.register({
       // See https://github.com/mike-marcacci/node-redlock#configuration
       clients: [new Redis({ host: "localhost" })],
       settings: {
@@ -33,7 +33,7 @@ import Redis from "ioredis";
         retryJitter: 200,
         automaticExtensionThreshold: 500,
       },
-      // Default duratiuon to use with RedisRedlock decorator
+      // Default duratiuon to use with Redlock decorator
       duration: 1000,
     }),
   ],
@@ -41,14 +41,14 @@ import Redis from "ioredis";
 export class AppModule {}
 ```
 
-### 2. Add `RedisRedlock` decorator
+### 2. Add `Redlock` decorator
 
 ```ts
-import { RedisRedlock } from "@anchan828/nest-redlock";
+import { Redlock } from "@anchan828/nest-redlock";
 
 @Injectable()
 export class ExampleService {
-  @RedisRedlock("lock-key")
+  @Redlock("lock-key")
   public async addComment(projectId: number, comment: string): Promise<void> {}
 }
 ```
@@ -63,12 +63,12 @@ Using constants causes the same lock key to be used for all calls. Let's reduce 
 In this example, only certain projects are now locked.
 
 ```ts
-import { RedisRedlock } from "@anchan828/nest-redlock";
+import { Redlock } from "@anchan828/nest-redlock";
 
 @Injectable()
 export class ExampleService {
   // The arguments define the class object to which the decorator is being added and the method arguments in order.
-  @RedisRedlock((target: ExampleService, projectId: number, comment: string) => `projects/${projectId}/comments`)
+  @Redlock((target: ExampleService, projectId: number, comment: string) => `projects/${projectId}/comments`)
   public async addComment(projectId: number, comment: string): Promise<void> {}
 }
 ```
@@ -78,7 +78,7 @@ Of course, you can lock multiple keys.
 ```ts
 @Injectable()
 export class ExampleService {
-  @RedisRedlock((target: ExampleService, projectId: number, args: Array<{ commentId: number; comment: string }>) =>
+  @Redlock((target: ExampleService, projectId: number, args: Array<{ commentId: number; comment: string }>) =>
     args.map((arg) => `projects/${projectId}/comments/${arg.commentId}`),
   )
   public async updateComments(projectId: number, args: Array<{ commentId: number; comment: string }>): Promise<void> {}
@@ -87,14 +87,14 @@ export class ExampleService {
 
 ## Using Redlock service
 
-If you want to use node-redlock as is, use RedisRedlockService.
+If you want to use node-redlock as is, use RedlockService.
 
 ```ts
-import { RedisRedlockService } from "@anchan828/nest-redlock";
+import { RedlockService } from "@anchan828/nest-redlock";
 
 @Injectable()
 export class ExampleService {
-  constructor(private readonly redlock: RedisRedlockService) {}
+  constructor(private readonly redlock: RedlockService) {}
 
   public async addComment(projectId: number, comment: string): Promise<void> {
     await this.redlock.using([`projects/${projectId}/comments`], 5000, (signal) => {
@@ -108,29 +108,29 @@ export class ExampleService {
 }
 ```
 
-## Using the RedisRedlockService mock
+## Using the RedlockService mock
 
-If you do not want to use Redis in your Unit tests, define the mock class as RedisRedlockService.
+If you do not want to use Redis in your Unit tests, define the mock class as RedlockService.
 
 ```ts
 const app = await Test.createTestingModule({
-  providers: [TestService, { provide: RedisRedlockService, useClass: MockRedisRedlockService }],
+  providers: [TestService, { provide: RedlockService, useClass: MockRedlockService }],
 }).compile();
 ```
 
 ## Troubleshooting
 
-### Nest can't resolve dependencies of the XXX. Please make sure that the "@redisRedlockService" property is available in the current context.
+### Nest can't resolve dependencies of the XXX. Please make sure that the "@redlockService" property is available in the current context.
 
-This is the error output when using the RedisRedlock decorator without importing the RedisRedlockModule.
+This is the error output when using the Redlock decorator without importing the RedlockModule.
 
 ```ts
-import { RedisRedlockModule } from "@anchan828/nest-redlock";
+import { RedlockModule } from "@anchan828/nest-redlock";
 import Redis from "ioredis";
 
 @Module({
   imports: [
-    RedisRedlockModule.register({
+    RedlockModule.register({
       clients: [new Redis({ host: "localhost" })],
     }),
   ],
@@ -140,11 +140,11 @@ export class AppModule {}
 
 #### What should I do with Unit tests, I don't want to use Redis.
 
-Use `MockRedisRedlockService` class. Register MockRedisRedlockService with the provider as RedisRedlockService.
+Use `MockRedlockService` class. Register MockRedlockService with the provider as RedlockService.
 
 ```ts
 const app = await Test.createTestingModule({
-  providers: [TestService, { provide: RedisRedlockService, useClass: MockRedisRedlockService }],
+  providers: [TestService, { provide: RedlockService, useClass: MockRedlockService }],
 }).compile();
 ```
 

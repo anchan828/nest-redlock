@@ -1,7 +1,7 @@
 import Redis, { Cluster } from "ioredis";
 import { Settings } from "redlock";
 
-export type RedisRedlockModuleOptions = {
+export type RedlockModuleOptions = {
   clients: Iterable<Redis | Cluster>;
   settings?: Partial<Settings>;
   scripts?: {
@@ -11,7 +11,7 @@ export type RedisRedlockModuleOptions = {
   };
 
   /**
-   * Default duratiuon to use with RedisRedlock decorator
+   * Default duratiuon to use with Redlock decorator
    *
    * @type {number}
    */

@@ -1,24 +1,24 @@
 import { Test } from "@nestjs/testing";
-import { RedisRedlock } from "./redis-redlock.decorator";
-import { MockRedisRedlockService } from "./redis-redlock.mock-service";
-import { RedisRedlockService } from "./redis-redlock.service";
+import { Redlock } from "./redlock.decorator";
+import { MockRedlockService } from "./redlock.mock-service";
+import { RedlockService } from "./redlock.service";
 
-describe("MockRedisRedlockService", () => {
+describe("MockRedlockService", () => {
   it("should set mock for unit testing", async () => {
     class TestService {
-      @RedisRedlock("test")
+      @Redlock("test")
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       public async testMethod(): Promise<void> {}
     }
 
     const app = await Test.createTestingModule({
-      providers: [TestService, { provide: RedisRedlockService, useClass: MockRedisRedlockService }],
-      exports: [RedisRedlockService],
+      providers: [TestService, { provide: RedlockService, useClass: MockRedlockService }],
+      exports: [RedlockService],
     }).compile();
 
     expect(app).toBeDefined();
 
-    const service = app.get(RedisRedlockService);
+    const service = app.get(RedlockService);
 
     {
       // quit
