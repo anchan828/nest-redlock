@@ -2,10 +2,10 @@ import { Injectable } from "@nestjs/common";
 import { Test } from "@nestjs/testing";
 import Redis from "ioredis";
 import { setTimeout } from "timers/promises";
-import { RedisRedlockModule } from "./redis-redlock.module";
-import { RedisRedlockService } from "./redis-redlock.service";
+import { RedlockModule } from "./redlock.module";
+import { RedlockService } from "./redlock.service";
 
-describe("RedisRedlockService", () => {
+describe("RedlockService", () => {
   let client: Redis;
 
   beforeEach(async () => {
@@ -18,7 +18,7 @@ describe("RedisRedlockService", () => {
 
     @Injectable()
     class TestService {
-      constructor(private readonly redlock: RedisRedlockService) {}
+      constructor(private readonly redlock: RedlockService) {}
 
       public async testMethod1(): Promise<number> {
         return await this.redlock.using(["test1"], 5000, async () => {
@@ -42,7 +42,7 @@ describe("RedisRedlockService", () => {
 
     const app = await Test.createTestingModule({
       imports: [
-        RedisRedlockModule.register({
+        RedlockModule.register({
           clients: [client],
         }),
       ],
@@ -78,7 +78,7 @@ describe("RedisRedlockService", () => {
 
     @Injectable()
     class TestService {
-      constructor(private readonly redlock: RedisRedlockService) {}
+      constructor(private readonly redlock: RedlockService) {}
 
       public async testMethod(args: Array<{ id: number; text: string }>, delay = 0): Promise<number> {
         return await this.redlock.using(
@@ -94,7 +94,7 @@ describe("RedisRedlockService", () => {
 
     const app = await Test.createTestingModule({
       imports: [
-        RedisRedlockModule.register({
+        RedlockModule.register({
           clients: [client],
         }),
       ],

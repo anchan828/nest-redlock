@@ -1,5 +1,5 @@
-export { RedisRedlock } from "./redis-redlock.decorator";
-export { GenerateResourceFunc, RedisRedlockModuleOptions } from "./redis-redlock.interface";
-export { MockRedisRedlockService } from "./redis-redlock.mock-service";
-export { RedisRedlockModule } from "./redis-redlock.module";
-export { RedisRedlockService } from "./redis-redlock.service";
+export { Redlock } from "./redlock.decorator";
+export { GenerateResourceFunc, RedlockModuleOptions } from "./redlock.interface";
+export { MockRedlockService } from "./redlock.mock-service";
+export { RedlockModule } from "./redlock.module";
+export { RedlockService } from "./redlock.service";

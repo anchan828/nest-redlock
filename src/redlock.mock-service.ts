@@ -2,7 +2,7 @@
 import { ExecutionResult, Lock, RedlockAbortSignal, Settings } from "redlock";
 import { EventEmitter } from "stream";
 
-export class MockRedisRedlockService extends EventEmitter {
+export class MockRedlockService extends EventEmitter {
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   public async quit(): Promise<void> {}
 
