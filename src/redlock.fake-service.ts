@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { EventEmitter } from "events";
 import { ExecutionResult, Lock, RedlockAbortSignal, Settings } from "redlock";
-import { EventEmitter } from "stream";
 
-export class MockRedlockService extends EventEmitter {
+export class FakeRedlockService extends EventEmitter {
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   public async quit(): Promise<void> {}
 
   public async acquire(resources: string[], duration: number, settings?: Partial<Settings> | undefined): Promise<Lock> {
-    return createLockMock();
+    return createLockFake();
   }
 
   public async release(lock: Lock, settings?: Partial<Settings> | undefined): Promise<ExecutionResult> {
@@ -15,7 +15,7 @@ export class MockRedlockService extends EventEmitter {
   }
 
   public async extend(existing: Lock, duration: number, settings?: Partial<Settings> | undefined): Promise<Lock> {
-    return createLockMock();
+    return createLockFake();
   }
 
   public async using<T>(
@@ -42,7 +42,7 @@ export class MockRedlockService extends EventEmitter {
   }
 }
 
-function createLockMock(): Lock {
+function createLockFake(): Lock {
   let lock: Lock;
 
   // eslint-disable-next-line prefer-const

@@ -1,10 +1,10 @@
 import { Test } from "@nestjs/testing";
 import { Redlock } from "./redlock.decorator";
-import { MockRedlockService } from "./redlock.mock-service";
+import { FakeRedlockService } from "./redlock.fake-service";
 import { RedlockService } from "./redlock.service";
 
-describe("MockRedlockService", () => {
-  it("should set mock for unit testing", async () => {
+describe("FakeRedlockService", () => {
+  it("should set fake for unit testing", async () => {
     class TestService {
       @Redlock("test")
       // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -12,7 +12,7 @@ describe("MockRedlockService", () => {
     }
 
     const app = await Test.createTestingModule({
-      providers: [TestService, { provide: RedlockService, useClass: MockRedlockService }],
+      providers: [TestService, { provide: RedlockService, useClass: FakeRedlockService }],
       exports: [RedlockService],
     }).compile();
 
