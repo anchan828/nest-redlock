@@ -108,13 +108,13 @@ export class ExampleService {
 }
 ```
 
-## Using the RedlockService mock
+## Using fake RedlockService 
 
-If you do not want to use Redis in your Unit tests, define the mock class as RedlockService.
+If you do not want to use Redis in your Unit tests, define the fake class as RedlockService.
 
 ```ts
 const app = await Test.createTestingModule({
-  providers: [TestService, { provide: RedlockService, useClass: MockRedlockService }],
+  providers: [TestService, { provide: RedlockService, useClass: FakeRedlockService }],
 }).compile();
 ```
 
@@ -140,11 +140,11 @@ export class AppModule {}
 
 #### What should I do with Unit tests, I don't want to use Redis.
 
-Use `MockRedlockService` class. Register MockRedlockService with the provider as RedlockService.
+Use `FakeRedlockService` class. Register FakeRedlockService with the provider as RedlockService.
 
 ```ts
 const app = await Test.createTestingModule({
-  providers: [TestService, { provide: RedlockService, useClass: MockRedlockService }],
+  providers: [TestService, { provide: RedlockService, useClass: FakeRedlockService }],
 }).compile();
 ```
 
