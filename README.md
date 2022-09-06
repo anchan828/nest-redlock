@@ -68,7 +68,9 @@ import { Redlock } from "@anchan828/nest-redlock";
 @Injectable()
 export class ExampleService {
   // The arguments define the class object to which the decorator is being added and the method arguments in order.
-  @Redlock((target: ExampleService, projectId: number, comment: string) => `projects/${projectId}/comments`)
+  @Redlock<ExampleService["addComment"]>(
+    (target: ExampleService, projectId: number, comment: string) => `projects/${projectId}/comments`,
+  )
   public async addComment(projectId: number, comment: string): Promise<void> {}
 }
 ```
@@ -78,8 +80,9 @@ Of course, you can lock multiple keys.
 ```ts
 @Injectable()
 export class ExampleService {
-  @Redlock((target: ExampleService, projectId: number, args: Array<{ commentId: number; comment: string }>) =>
-    args.map((arg) => `projects/${projectId}/comments/${arg.commentId}`),
+  @Redlock<ExampleService["updateComments"]>(
+    (target: ExampleService, projectId: number, args: Array<{ commentId: number; comment: string }>) =>
+      args.map((arg) => `projects/${projectId}/comments/${arg.commentId}`),
   )
   public async updateComments(projectId: number, args: Array<{ commentId: number; comment: string }>): Promise<void> {}
 }
@@ -108,7 +111,7 @@ export class ExampleService {
 }
 ```
 
-## Using fake RedlockService 
+## Using fake RedlockService
 
 If you do not want to use Redis in your Unit tests, define the fake class as RedlockService.
 

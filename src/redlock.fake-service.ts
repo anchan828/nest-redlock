@@ -6,7 +6,7 @@ export class FakeRedlockService extends EventEmitter {
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   public async quit(): Promise<void> {}
 
-  public async acquire(resources: string[], duration: number, settings?: Partial<Settings> | undefined): Promise<Lock> {
+  public async acquire(keys: string[], duration: number, settings?: Partial<Settings> | undefined): Promise<Lock> {
     return createLockFake();
   }
 
@@ -19,20 +19,20 @@ export class FakeRedlockService extends EventEmitter {
   }
 
   public async using<T>(
-    resources: string[],
+    keys: string[],
     duration: number,
     settings: Partial<Settings>,
     routine?: ((signal: RedlockAbortSignal) => Promise<T>) | undefined,
   ): Promise<T>;
 
   public async using<T>(
-    resources: string[],
+    keys: string[],
     duration: number,
     routine: (signal: RedlockAbortSignal) => Promise<T>,
   ): Promise<T>;
 
   public async using<T = any>(
-    resources: unknown,
+    keys: unknown,
     duration: unknown,
     settingsOrRoutine: unknown,
     routine?: (signal: RedlockAbortSignal) => Promise<T>,

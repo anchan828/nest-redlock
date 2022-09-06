@@ -1,11 +1,11 @@
 import { Inject } from "@nestjs/common";
 import { RedlockAbortSignal, Settings } from "redlock";
 import { DEFAULT_DURATION } from "./redlock.constants";
-import { GenerateResourceFunc } from "./redlock.interface";
+import { RedLockKeyFunction } from "./redlock.interface";
 import { RedlockService } from "./redlock.service";
 
-export function Redlock(
-  resource: string | string[] | GenerateResourceFunc,
+export function Redlock<T extends (...args: any) => any = (...args: any) => any>(
+  key: string | string[] | RedLockKeyFunction<T>,
   duration?: number,
   settings: Partial<Settings> = {},
 ): MethodDecorator {
@@ -23,10 +23,10 @@ export function Redlock(
       const descriptorThis = this;
       const redlockService = (descriptorThis as any)[serviceSymbol] as RedlockService;
 
-      const resources = getResources(resource, descriptorThis, args);
+      const keys = getKeys(key, descriptorThis, args);
 
       return await redlockService.using(
-        resources,
+        keys,
         duration || redlockService.options?.duration || DEFAULT_DURATION,
         settings,
         async (signal: RedlockAbortSignal) => {
@@ -44,17 +44,17 @@ export function Redlock(
   };
 }
 
-function getResources(
-  resource: string | string[] | GenerateResourceFunc,
+function getKeys(
+  key: string | string[] | RedLockKeyFunction,
   descriptorThis: TypedPropertyDescriptor<any>,
   args: any[],
 ): string[] {
-  if (typeof resource === "string") {
-    return [resource];
-  } else if (Array.isArray(resource)) {
-    return resource;
-  } else if (typeof resource === "function") {
-    return [resource(descriptorThis, ...args)].flat();
+  if (typeof key === "string") {
+    return [key];
+  } else if (Array.isArray(key)) {
+    return key;
+  } else if (typeof key === "function") {
+    return [key(descriptorThis, ...args)].flat();
   }
 
   return [];

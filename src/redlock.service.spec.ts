@@ -13,7 +13,7 @@ describe("RedlockService", () => {
     await client.flushdb();
   });
 
-  it("should added messages in the correct order - single resource", async () => {
+  it("should added messages in the correct order - single key", async () => {
     const messages: string[] = [];
 
     @Injectable()
@@ -73,7 +73,7 @@ describe("RedlockService", () => {
     await app.close();
   });
 
-  it("should added messages in the correct order - multiple resource", async () => {
+  it("should added messages in the correct order - multiple key", async () => {
     const messages: Array<{ id: number; text: string }> = [];
 
     @Injectable()
@@ -82,7 +82,7 @@ describe("RedlockService", () => {
 
       public async testMethod(args: Array<{ id: number; text: string }>, delay = 0): Promise<number> {
         return await this.redlock.using(
-          args.map((arg) => `resources/${arg.id}`),
+          args.map((arg) => `keys/${arg.id}`),
           5000,
           async () => {
             await setTimeout(delay);
