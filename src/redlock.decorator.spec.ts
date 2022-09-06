@@ -27,7 +27,7 @@ describe("Redlock", () => {
     await client.quit();
   });
 
-  it("should added messages in the correct order - single resource", async () => {
+  it("should added messages in the correct order - single key", async () => {
     const messages: string[] = [];
 
     class TestService {
@@ -81,12 +81,12 @@ describe("Redlock", () => {
     await app.close();
   });
 
-  it("should added messages in the correct order - multiple resource", async () => {
+  it("should added messages in the correct order - multiple key", async () => {
     const messages: Array<{ id: number; text: string }> = [];
 
     class TestService {
-      @Redlock((target: TestService, args: Array<{ id: number; text: string }>) =>
-        args.map((arg) => `resources/${arg.id}`),
+      @Redlock<TestService["testMethod"]>((target: TestService, args: Array<{ id: number; text: string }>) =>
+        args.map((arg) => `keys/${arg.id}`),
       )
       public async testMethod(args: Array<{ id: number; text: string }>, delay = 0): Promise<number> {
         await setTimeout(delay);

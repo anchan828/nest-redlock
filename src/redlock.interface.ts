@@ -18,4 +18,7 @@ export type RedlockModuleOptions = {
   duration?: number;
 };
 
-export type GenerateResourceFunc = (target: any, ...args: any[]) => string | string[];
+export type RedLockKeyFunction<T extends (...args: any) => any = (...args: any) => any> = (
+  target: any,
+  ...args: Parameters<T>
+) => string[] | string;
