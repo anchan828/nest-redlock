@@ -18,7 +18,7 @@ export type RedlockModuleOptions = {
   duration?: number;
 };
 
-export type RedLockKeyFunction<T extends (...args: any) => any = (...args: any) => any> = (
+export type RedlockKeyFunction<T extends (...args: any) => any = (...args: any) => any> = (
   target: any,
   ...args: Parameters<T>
 ) => string[] | string;

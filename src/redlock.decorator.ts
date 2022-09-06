@@ -1,11 +1,11 @@
 import { Inject } from "@nestjs/common";
 import { RedlockAbortSignal, Settings } from "redlock";
 import { DEFAULT_DURATION } from "./redlock.constants";
-import { RedLockKeyFunction } from "./redlock.interface";
+import { RedlockKeyFunction } from "./redlock.interface";
 import { RedlockService } from "./redlock.service";
 
 export function Redlock<T extends (...args: any) => any = (...args: any) => any>(
-  key: string | string[] | RedLockKeyFunction<T>,
+  key: string | string[] | RedlockKeyFunction<T>,
   duration?: number,
   settings: Partial<Settings> = {},
 ): MethodDecorator {
@@ -45,7 +45,7 @@ export function Redlock<T extends (...args: any) => any = (...args: any) => any>
 }
 
 function getKeys(
-  key: string | string[] | RedLockKeyFunction,
+  key: string | string[] | RedlockKeyFunction,
   descriptorThis: TypedPropertyDescriptor<any>,
   args: any[],
 ): string[] {
