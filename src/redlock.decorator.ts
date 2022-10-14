@@ -49,13 +49,13 @@ function getKeys(
   descriptorThis: TypedPropertyDescriptor<any>,
   args: any[],
 ): string[] {
+  const keys = new Set<string>();
   if (typeof key === "string") {
-    return [key];
+    keys.add(key);
   } else if (Array.isArray(key)) {
-    return key;
+    key.forEach((k) => keys.add(k));
   } else if (typeof key === "function") {
-    return [key(descriptorThis, ...args)].flat();
+    [key(descriptorThis, ...args)].flat().forEach((k) => keys.add(k));
   }
-
-  return [];
+  return Array.from(keys);
 }
