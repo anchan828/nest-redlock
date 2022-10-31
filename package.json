@@ -26,8 +26,8 @@
     "redlock": "^5.0.0-beta.2"
   },
   "devDependencies": {
-    "@commitlint/cli": "^17.1.2",
-    "@commitlint/config-conventional": "^17.1.0",
+    "@commitlint/cli": "^17.2.0",
+    "@commitlint/config-conventional": "^17.2.0",
     "@nestjs/common": "^9.1.6",
     "@nestjs/core": "^9.1.6",
     "@nestjs/platform-express": "^9.1.6",
@@ -35,8 +35,8 @@
     "@types/jest": "^29.2.0",
     "@types/node": "^18.11.8",
     "@types/supertest": "^2.0.12",
-    "@typescript-eslint/eslint-plugin": "^5.41.0",
-    "@typescript-eslint/parser": "^5.41.0",
+    "@typescript-eslint/eslint-plugin": "^5.42.0",
+    "@typescript-eslint/parser": "^5.42.0",
     "eslint": "^8.26.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.2.1",
