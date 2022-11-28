@@ -26,11 +26,11 @@ export function Redlock<T extends (...args: any) => any = (...args: any) => any>
       const keys = getKeys(key, descriptorThis, args);
       const useDuration = duration || redlockService.options?.duration || DEFAULT_DURATION;
 
-      await redlockService.options.decoratorHooks?.preLockKeys?.({ keys, duration: useDuration });
+      await redlockService.options?.decoratorHooks?.preLockKeys?.({ keys, duration: useDuration });
       const startTime = Date.now();
       return await redlockService
         .using(keys, useDuration, settings, async (signal: RedlockAbortSignal) => {
-          await redlockService.options.decoratorHooks?.lockedKeys?.({
+          await redlockService.options?.decoratorHooks?.lockedKeys?.({
             keys,
             duration: useDuration,
             elapsedTime: Date.now() - startTime,
@@ -44,7 +44,7 @@ export function Redlock<T extends (...args: any) => any = (...args: any) => any>
           return result;
         })
         .finally(async () => {
-          await redlockService.options.decoratorHooks?.unlockedKeys?.({
+          await redlockService.options?.decoratorHooks?.unlockedKeys?.({
             keys,
             duration: useDuration,
             elapsedTime: Date.now() - startTime,
