@@ -147,4 +147,89 @@ describe("Redlock", () => {
 
     await app.close();
   });
+
+  it("should call hooks", async () => {
+    const messages: string[] = [];
+
+    class TestService {
+      @Redlock("test1")
+      public async testMethod1(): Promise<number> {
+        await setTimeout(500);
+        return messages.push("testMethod1");
+      }
+
+      @Redlock("test2")
+      public async testMethod2(): Promise<number> {
+        return messages.push("testMethod2");
+      }
+
+      @Redlock("test3")
+      public async testMethod3(): Promise<number> {
+        return messages.push("testMethod3");
+      }
+    }
+
+    const lockedKeysHook = jest.fn();
+    const preLockKeysHook = jest.fn();
+    const unlockedKeysHook = jest.fn();
+
+    const app = await Test.createTestingModule({
+      imports: [
+        RedlockModule.register({
+          clients: [client],
+          decoratorHooks: {
+            lockedKeys: lockedKeysHook,
+            preLockKeys: preLockKeysHook,
+            unlockedKeys: unlockedKeysHook,
+          },
+        }),
+      ],
+      providers: [TestService],
+      exports: [TestService],
+    }).compile();
+
+    const service = app.get(TestService);
+
+    await expect(
+      Promise.all([
+        service.testMethod1(),
+        service.testMethod1(),
+        new Promise<number>(async (resolve) => {
+          // Always ensure that testMethod1 is called first.
+          await setTimeout(100);
+          resolve(await service.testMethod2());
+        }),
+        new Promise<number>(async (resolve) => {
+          // Always ensure that testMethod2 is called second.
+          await setTimeout(200);
+          resolve(await service.testMethod3());
+        }),
+      ]),
+    ).resolves.toEqual([3, 4, 1, 2]);
+
+    expect(messages).toEqual(["testMethod2", "testMethod3", "testMethod1", "testMethod1"]);
+
+    expect(preLockKeysHook.mock.calls).toEqual([
+      [{ duration: 5000, keys: ["test1"] }],
+      [{ duration: 5000, keys: ["test1"] }],
+      [{ duration: 5000, keys: ["test2"] }],
+      [{ duration: 5000, keys: ["test3"] }],
+    ]);
+
+    expect(lockedKeysHook.mock.calls).toEqual([
+      [{ duration: 5000, elapsedTime: expect.any(Number), keys: ["test1"] }],
+      [{ duration: 5000, elapsedTime: expect.any(Number), keys: ["test2"] }],
+      [{ duration: 5000, elapsedTime: expect.any(Number), keys: ["test3"] }],
+      [{ duration: 5000, elapsedTime: expect.any(Number), keys: ["test1"] }],
+    ]);
+
+    expect(unlockedKeysHook.mock.calls).toEqual([
+      [{ duration: 5000, elapsedTime: expect.any(Number), keys: ["test2"] }],
+      [{ duration: 5000, elapsedTime: expect.any(Number), keys: ["test3"] }],
+      [{ duration: 5000, elapsedTime: expect.any(Number), keys: ["test1"] }],
+      [{ duration: 5000, elapsedTime: expect.any(Number), keys: ["test1"] }],
+    ]);
+
+    await app.close();
+  });
 });

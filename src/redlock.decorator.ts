@@ -24,12 +24,17 @@ export function Redlock<T extends (...args: any) => any = (...args: any) => any>
       const redlockService = (descriptorThis as any)[serviceSymbol] as RedlockService;
 
       const keys = getKeys(key, descriptorThis, args);
+      const useDuration = duration || redlockService.options?.duration || DEFAULT_DURATION;
 
-      return await redlockService.using(
-        keys,
-        duration || redlockService.options?.duration || DEFAULT_DURATION,
-        settings,
-        async (signal: RedlockAbortSignal) => {
+      await redlockService.options.decoratorHooks?.preLockKeys?.({ keys, duration: useDuration });
+      const startTime = Date.now();
+      return await redlockService
+        .using(keys, useDuration, settings, async (signal: RedlockAbortSignal) => {
+          await redlockService.options.decoratorHooks?.lockedKeys?.({
+            keys,
+            duration: useDuration,
+            elapsedTime: Date.now() - startTime,
+          });
           const result = await originalMethod.apply(descriptorThis, args);
 
           if (signal.aborted) {
@@ -37,8 +42,14 @@ export function Redlock<T extends (...args: any) => any = (...args: any) => any>
           }
 
           return result;
-        },
-      );
+        })
+        .finally(async () => {
+          await redlockService.options.decoratorHooks?.unlockedKeys?.({
+            keys,
+            duration: useDuration,
+            elapsedTime: Date.now() - startTime,
+          });
+        });
     };
     return descriptor;
   };
