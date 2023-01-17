@@ -23,7 +23,7 @@ export function Redlock<T extends (...args: any) => any = (...args: any) => any>
       const descriptorThis = this;
       const redlockService = (descriptorThis as any)[serviceSymbol] as RedlockService;
 
-      if (redlockService.options.decoratorEnabled !== undefined && !redlockService.options.decoratorEnabled) {
+      if (redlockService?.options?.decoratorEnabled !== undefined && !redlockService.options.decoratorEnabled) {
         return await originalMethod.apply(descriptorThis, args);
       }
 
