@@ -7,6 +7,13 @@ export type UnlockedKeysHookArgs = { keys: string[]; duration: number; elapsedTi
 
 export type RedlockModuleOptions = {
   clients: Iterable<Redis | Cluster>;
+
+  /**
+   * Default: true
+   * Used only with @Redlock decorator.
+   */
+  decoratorEnabled?: boolean;
+
   settings?: Partial<Settings>;
   scripts?: {
     readonly acquireScript?: string | ((script: string) => string);
