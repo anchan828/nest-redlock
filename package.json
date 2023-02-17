@@ -26,8 +26,8 @@
     "redlock": "^5.0.0-beta.2"
   },
   "devDependencies": {
-    "@commitlint/cli": "^17.4.3",
-    "@commitlint/config-conventional": "^17.4.3",
+    "@commitlint/cli": "^17.4.4",
+    "@commitlint/config-conventional": "^17.4.4",
     "@nestjs/common": "^9.3.9",
     "@nestjs/core": "^9.3.9",
     "@nestjs/platform-express": "^9.3.9",
