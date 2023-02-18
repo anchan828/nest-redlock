@@ -9,7 +9,7 @@ describe("SimpleRedlockService", () => {
   let client: Redis;
 
   beforeEach(async () => {
-    client = new Redis({ host: "localhost" });
+    client = new Redis({ host: "localhost", db: 1 });
     await client.flushdb();
   });
 
