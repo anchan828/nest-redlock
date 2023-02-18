@@ -107,6 +107,10 @@ export class SimpleRedlockService {
    * @memberof SimpleRedlockService
    */
   private async tryLock(keys: string[], id: string, settings: SimpleRedlockSettings): Promise<boolean> {
+    if (keys.length === 0) {
+      return true;
+    }
+
     const args: Array<RedisValue> = [...keys, id, settings.expire];
     let result = 0;
     try {
@@ -119,6 +123,10 @@ export class SimpleRedlockService {
   }
 
   private async unlock(keys: string[], id: string): Promise<void> {
+    if (keys.length === 0) {
+      return;
+    }
+
     const args: Array<RedisValue> = [...keys, id];
     try {
       await this.options.client.evalsha(this.scripts.release.hash, keys.length, args as any);

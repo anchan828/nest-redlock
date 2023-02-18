@@ -73,6 +73,66 @@ describe("SimpleRedlockService", () => {
     await app.close();
   });
 
+  it("should added messages in the correct order - empty keys", async () => {
+    const messages: string[] = [];
+
+    @Injectable()
+    class TestService {
+      constructor(private readonly redlock: SimpleRedlockService) {}
+
+      public async testMethod1(): Promise<number> {
+        return await this.redlock.using([], async () => {
+          await setTimeout(500);
+          return messages.push("testMethod1");
+        });
+      }
+
+      public async testMethod2(): Promise<number> {
+        return await this.redlock.using([], async () => {
+          return messages.push("testMethod2");
+        });
+      }
+
+      public async testMethod3(): Promise<number> {
+        return await this.redlock.using([], async () => {
+          return messages.push("testMethod3");
+        });
+      }
+    }
+
+    const app = await Test.createTestingModule({
+      imports: [
+        SimpleRedlockModule.register({
+          client,
+        }),
+      ],
+      providers: [TestService],
+      exports: [TestService],
+    }).compile();
+
+    const service = app.get(TestService);
+
+    await expect(
+      Promise.all([
+        service.testMethod1(),
+        new Promise<number>(async (resolve) => {
+          // Always ensure that testMethod1 is called first.
+          await setTimeout(100);
+          resolve(await service.testMethod2());
+        }),
+        new Promise<number>(async (resolve) => {
+          // Always ensure that testMethod2 is called second.
+          await setTimeout(200);
+          resolve(await service.testMethod3());
+        }),
+      ]),
+    ).resolves.toEqual([3, 1, 2]);
+
+    expect(messages).toEqual(["testMethod2", "testMethod3", "testMethod1"]);
+
+    await app.close();
+  });
+
   it("should added messages in the correct order - multiple key", async () => {
     const messages: Array<{ id: number; text: string }> = [];
 
