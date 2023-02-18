@@ -1,0 +1,45 @@
+{
+  "name": "@anchan828/nest-redlock",
+  "version": "0.1.28",
+  "description": "This is a [Nest](https://github.com/nestjs/nest) implementation of the redlock algorithm for distributed redis locks.",
+  "homepage": "https://github.com/anchan828/nest-redlock#readme",
+  "bugs": {
+    "url": "https://github.com/anchan828/nest-redlock/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/anchan828/nest-redlock.git"
+  },
+  "license": "MIT",
+  "author": "anchan828 <anchan828@gmail.com>",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "copy:license": "cp ../../LICENSE ./",
+    "lint": "TIMING=1 eslint --ignore-path ../../.eslintignore '**/*.ts'",
+    "lint:fix": "npm run lint -- --fix",
+    "test": "jest --coverage --runInBand --detectOpenHandles",
+    "test:debug": "node --inspect-brk ../../node_modules/jest/bin/jest --runInBand --logHeapUsage",
+    "test:watch": "npm run test -- --watch",
+    "watch": "tsc --watch"
+  },
+  "dependencies": {
+    "redlock": "^5.0.0-beta.2"
+  },
+  "devDependencies": {
+    "@nestjs/common": "^9.3.9",
+    "@nestjs/core": "^9.3.9",
+    "@nestjs/platform-express": "^9.3.9",
+    "@nestjs/testing": "^9.3.9",
+    "ioredis": "^5.3.1",
+    "reflect-metadata": "^0.1.13",
+    "rxjs": "^7.8.0"
+  },
+  "volta": {
+    "node": "18.14.1"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
