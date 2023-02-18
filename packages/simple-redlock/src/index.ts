@@ -3,8 +3,10 @@ export { FakeSimpleRedlockService } from "./redlock.fake-service";
 export {
   LockedKeysHookArgs,
   PreLockedKeysHookArgs,
+  SimpleRedlockAbortSignal,
   SimpleRedlockKeyFunction,
   SimpleRedlockModuleOptions,
+  SimpleRedlockSettings,
   UnlockedKeysHookArgs,
 } from "./redlock.interface";
 export { SimpleRedlockModule } from "./redlock.module";
