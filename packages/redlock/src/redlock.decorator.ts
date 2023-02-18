@@ -34,16 +34,17 @@ export function Redlock<T extends (...args: any) => any = (...args: any) => any>
       const startTime = Date.now();
       return await redlockService
         .using(keys, useDuration, settings, async (signal: RedlockAbortSignal) => {
+          if (signal.aborted) {
+            throw signal.error;
+          }
+
           await redlockService.options?.decoratorHooks?.lockedKeys?.({
             keys,
             duration: useDuration,
             elapsedTime: Date.now() - startTime,
           });
-          const result = await originalMethod.apply(descriptorThis, args);
 
-          if (signal.aborted) {
-            throw signal.error;
-          }
+          const result = await originalMethod.apply(descriptorThis, args);
 
           return result;
         })
