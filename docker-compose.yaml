@@ -2,7 +2,7 @@ version: "3.4"
 
 services:
   redis:
-    image: redis:7.0.11-alpine
+    image: redis:7.0.12-alpine
     command: redis-server --lazyfree-lazy-user-del yes
     ports:
       - "6379:6379"
