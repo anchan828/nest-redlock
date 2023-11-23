@@ -1,4 +1,4 @@
-import { Inject, Module, OnModuleDestroy } from "@nestjs/common";
+import { Inject, Module, OnApplicationShutdown } from "@nestjs/common";
 import { SimpleRedlockModuleOptions } from "./redlock.interface";
 import { ConfigurableModuleClass, MODULE_OPTIONS_TOKEN } from "./redlock.module-definition";
 import { SimpleRedlockService } from "./redlock.service";
@@ -13,12 +13,12 @@ import { SimpleRedlockService } from "./redlock.service";
   ],
   exports: [SimpleRedlockService],
 })
-export class SimpleRedlockModule extends ConfigurableModuleClass implements OnModuleDestroy {
+export class SimpleRedlockModule extends ConfigurableModuleClass implements OnApplicationShutdown {
   constructor(@Inject(MODULE_OPTIONS_TOKEN) private readonly options: SimpleRedlockModuleOptions) {
     super();
   }
 
-  public async onModuleDestroy(): Promise<void> {
+  public async onApplicationShutdown(): Promise<void> {
     switch (this.options.client.status) {
       case "end":
         break;
