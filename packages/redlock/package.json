@@ -1,6 +1,6 @@
 {
   "name": "@anchan828/nest-redlock",
-  "version": "0.2.29",
+  "version": "0.2.30",
   "description": "This is a [Nest](https://github.com/nestjs/nest) implementation of the redlock algorithm for distributed redis locks.",
   "homepage": "https://github.com/anchan828/nest-redlock#readme",
   "bugs": {
