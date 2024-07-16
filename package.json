@@ -33,7 +33,7 @@
     "@lerna-lite/cli": "3.7.1",
     "@lerna-lite/publish": "3.7.1",
     "@types/jest": "29.5.12",
-    "@types/node": "20.14.10",
+    "@types/node": "20.14.11",
     "@types/supertest": "6.0.2",
     "@typescript-eslint/eslint-plugin": "7.16.1",
     "@typescript-eslint/parser": "7.16.1",
@@ -47,7 +47,7 @@
     "supertest": "7.0.0",
     "ts-jest": "29.2.2",
     "ts-node": "10.9.2",
-    "turbo": "2.0.6",
+    "turbo": "2.0.7",
     "typescript": "5.5.3"
   },
   "volta": {
