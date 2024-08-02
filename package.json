@@ -33,7 +33,7 @@
     "@lerna-lite/cli": "3.7.1",
     "@lerna-lite/publish": "3.7.1",
     "@types/jest": "29.5.12",
-    "@types/node": "20.14.13",
+    "@types/node": "20.14.14",
     "@types/supertest": "6.0.2",
     "@typescript-eslint/eslint-plugin": "7.18.0",
     "@typescript-eslint/parser": "7.18.0",
@@ -45,7 +45,7 @@
     "lint-staged": "15.2.7",
     "prettier": "3.3.3",
     "supertest": "7.0.0",
-    "ts-jest": "29.2.3",
+    "ts-jest": "29.2.4",
     "ts-node": "10.9.2",
     "turbo": "2.0.11",
     "typescript": "5.5.4"
