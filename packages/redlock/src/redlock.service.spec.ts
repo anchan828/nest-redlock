@@ -1,3 +1,4 @@
+/*eslint no-async-promise-executor: "off"*/
 import { Injectable } from "@nestjs/common";
 import { Test } from "@nestjs/testing";
 import Redis from "ioredis";
