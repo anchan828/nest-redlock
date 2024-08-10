@@ -11,7 +11,7 @@ export function Redlock<T extends (...args: any) => any = (...args: any) => any>
 ): MethodDecorator {
   const injectRedlockService = Inject(RedlockService);
 
-  return (target: Object, propertyKey: string | symbol, descriptor: TypedPropertyDescriptor<any>) => {
+  return (target: object, propertyKey: string | symbol, descriptor: TypedPropertyDescriptor<any>) => {
     const serviceSymbol = "@redlockService";
 
     injectRedlockService(target, serviceSymbol);

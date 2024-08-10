@@ -1,3 +1,4 @@
+/*eslint no-async-promise-executor: "off"*/
 import { Test } from "@nestjs/testing";
 import Redis from "ioredis";
 import { setTimeout } from "timers/promises";
