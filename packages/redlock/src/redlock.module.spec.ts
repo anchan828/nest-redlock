@@ -1,3 +1,4 @@
+import { Global, Module } from "@nestjs/common";
 import { Test } from "@nestjs/testing";
 import Redis from "ioredis";
 import { RedlockModule } from "./redlock.module";
@@ -38,6 +39,28 @@ describe("RedlockModule", () => {
             }),
           }),
         ],
+      }).compile();
+      expect(app).toBeDefined();
+      expect(app.get(RedlockService)).toBeDefined();
+      await app.close();
+    });
+  });
+
+  describe("use global scope", () => {
+    it("should compile", async () => {
+      @Global()
+      @Module({
+        imports: [
+          RedlockModule.register({
+            clients: [client],
+            duration: 1000,
+          }),
+        ],
+      })
+      class AppModule {}
+
+      const app = await Test.createTestingModule({
+        imports: [AppModule],
       }).compile();
       expect(app).toBeDefined();
       expect(app.get(RedlockService)).toBeDefined();
