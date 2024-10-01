@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { EventEmitter } from "events";
-import { ExecutionResult, Lock, RedlockAbortSignal, Settings } from "redlock";
+import { ExecutionResult, Lock, RedlockAbortSignal, Settings } from "@sesamecare-oss/redlock";
 
 export class FakeRedlockService extends EventEmitter {
   // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -11,7 +11,7 @@ export class FakeRedlockService extends EventEmitter {
   }
 
   public async release(lock: Lock, settings?: Partial<Settings> | undefined): Promise<ExecutionResult> {
-    return { attempts: [] };
+    return { attempts: [], start: Date.now() };
   }
 
   public async extend(existing: Lock, duration: number, settings?: Partial<Settings> | undefined): Promise<Lock> {
@@ -47,7 +47,7 @@ function createLockFake(): Lock {
 
   // eslint-disable-next-line prefer-const
   lock = {
-    release: async (): Promise<ExecutionResult> => ({ attempts: [] }),
+    release: async (): Promise<ExecutionResult> => ({ attempts: [], start: Date.now() }),
     extend: async (duration: number): Promise<Lock> => lock,
   } as Lock;
 

@@ -1,5 +1,5 @@
 import Redis, { Cluster } from "ioredis";
-import { Settings } from "redlock";
+import { Settings } from "@sesamecare-oss/redlock";
 
 export type PreLockedKeysHookArgs = { keys: string[]; duration: number };
 export type LockedKeysHookArgs = { keys: string[]; duration: number; elapsedTime: number };
@@ -15,11 +15,6 @@ export type RedlockModuleOptions = {
   decoratorEnabled?: boolean;
 
   settings?: Partial<Settings>;
-  scripts?: {
-    readonly acquireScript?: string | ((script: string) => string);
-    readonly extendScript?: string | ((script: string) => string);
-    readonly releaseScript?: string | ((script: string) => string);
-  };
   /**
    * Hooks called when using @Redlock decorator.
    */

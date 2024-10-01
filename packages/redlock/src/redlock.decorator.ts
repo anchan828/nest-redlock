@@ -1,5 +1,5 @@
 import { Inject } from "@nestjs/common";
-import { RedlockAbortSignal, Settings } from "redlock";
+import { RedlockAbortSignal, Settings } from "@sesamecare-oss/redlock";
 import { DEFAULT_DURATION } from "./redlock.constants";
 import { RedlockKeyFunction } from "./redlock.interface";
 import { RedlockService } from "./redlock.service";
