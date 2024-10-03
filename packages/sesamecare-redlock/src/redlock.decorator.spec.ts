@@ -9,7 +9,7 @@ describe("Redlock", () => {
   let client: Redis;
 
   beforeEach(async () => {
-    client = new Redis({ host: "localhost", db: 1 });
+    client = new Redis({ host: "localhost", port: 6380 });
   });
 
   it("should throw error - RedlockModule not imported", async () => {

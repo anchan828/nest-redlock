@@ -10,7 +10,7 @@ describe("RedlockService", () => {
   let client: Redis;
 
   beforeEach(async () => {
-    client = new Redis({ host: "localhost", db: 1 });
+    client = new Redis({ host: "localhost", port: 6380 });
     await client.flushdb();
   });
 
