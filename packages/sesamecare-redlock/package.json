@@ -1,0 +1,60 @@
+{
+  "name": "@anchan828/nest-sesamecare-redlock",
+  "version": "0.2.44",
+  "description": "This is a [Nest](https://github.com/nestjs/nest) implementation of the redlock algorithm for distributed redis locks.",
+  "homepage": "https://github.com/anchan828/nest-redlock#readme",
+  "bugs": {
+    "url": "https://github.com/anchan828/nest-redlock/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/anchan828/nest-redlock.git"
+  },
+  "license": "MIT",
+  "author": "anchan828 <anchan828@gmail.com>",
+  "main": "dist/cjs/index.js",
+  "types": "dist/cjs/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.cjs.json && tsc -p tsconfig.esm.json",
+    "copy:license": "cp ../../LICENSE ./",
+    "lint": "TIMING=1 eslint '**/*.ts'",
+    "lint:fix": "npm run lint -- --fix",
+    "test": "jest --coverage --runInBand --detectOpenHandles",
+    "test:debug": "node --inspect-brk ../../node_modules/jest/bin/jest --runInBand --logHeapUsage",
+    "test:watch": "npm run test -- --watch",
+    "watch": "tsc --watch"
+  },
+  "dependencies": {
+    "@sesamecare-oss/redlock": "^1.3.1"
+  },
+  "devDependencies": {
+    "@nestjs/common": "10.4.4",
+    "@nestjs/core": "10.4.4",
+    "@nestjs/platform-express": "10.4.4",
+    "@nestjs/testing": "10.4.4",
+    "ioredis": "5.4.1",
+    "reflect-metadata": "0.2.2",
+    "rxjs": "7.8.1"
+  },
+  "volta": {
+    "node": "20.17.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "packageManager": "npm@10.8.3",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/esm/index.d.ts",
+        "default": "./dist/esm/index.js"
+      },
+      "require": {
+        "types": "./dist/cjs/index.d.ts",
+        "default": "./dist/cjs/index.js"
+      },
+      "types": "./dist/cjs/index.d.ts",
+      "default": "./dist/cjs/index.js"
+    }
+  }
+}
