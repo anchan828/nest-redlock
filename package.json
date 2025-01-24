@@ -50,7 +50,7 @@
     "typescript-eslint": "^8.8.1"
   },
   "volta": {
-    "node": "20.18.1"
+    "node": "20.18.2"
   },
   "packageManager": "npm@10.9.2"
 }
