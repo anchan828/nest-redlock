@@ -34,7 +34,7 @@
     "@nestjs/testing": "11.0.10",
     "ioredis": "5.5.0",
     "reflect-metadata": "0.2.2",
-    "rxjs": "7.8.1"
+    "rxjs": "7.8.2"
   },
   "volta": {
     "node": "22.14.0"
