@@ -43,7 +43,7 @@
     "lint-staged": "16.0.0",
     "prettier": "3.5.3",
     "supertest": "7.1.1",
-    "ts-jest": "29.3.3",
+    "ts-jest": "29.3.4",
     "ts-node": "10.9.2",
     "turbo": "2.5.3",
     "typescript": "5.8.3",
