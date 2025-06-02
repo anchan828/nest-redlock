@@ -1,11 +1,11 @@
 services:
   redis-redlock:
-    image: redis:8.0.1-alpine
+    image: redis:8.0.2-alpine
     command: redis-server --lazyfree-lazy-user-del yes
     ports:
       - "6379:6379"
   redis-sesamecare-redlock:
-    image: redis:8.0.1-alpine
+    image: redis:8.0.2-alpine
     command: redis-server --lazyfree-lazy-user-del yes
     ports:
       - "6380:6379"
