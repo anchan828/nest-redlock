@@ -4,6 +4,19 @@ import { DEFAULT_DURATION } from "./redlock.constants";
 import { RedlockKeyFunction } from "./redlock.interface";
 import { RedlockService } from "./redlock.service";
 
+/**
+ * Copy metadata from source method to target method
+ */
+function copyMetadata(source: any, target: any): void {
+  if (typeof Reflect !== "undefined" && Reflect.getMetadataKeys) {
+    const metadataKeys = Reflect.getMetadataKeys(source);
+    for (const key of metadataKeys) {
+      const metadata = Reflect.getMetadata(key, source);
+      Reflect.defineMetadata(key, metadata, target);
+    }
+  }
+}
+
 export function Redlock<T extends (...args: any) => any = (...args: any) => any>(
   key: string | string[] | RedlockKeyFunction<T>,
   duration?: number,
@@ -56,6 +69,10 @@ export function Redlock<T extends (...args: any) => any = (...args: any) => any>
           });
         });
     };
+
+    // Copy metadata from original method to the new method
+    copyMetadata(originalMethod, descriptor.value);
+
     return descriptor;
   };
 }
