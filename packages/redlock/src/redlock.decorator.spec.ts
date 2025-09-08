@@ -5,6 +5,25 @@ import { setTimeout } from "timers/promises";
 import { Redlock } from "./redlock.decorator";
 import { RedlockModule } from "./redlock.module";
 
+// Custom metadata keys for testing
+const CUSTOM_METADATA_KEY = Symbol("custom_metadata");
+const ROUTE_METADATA_KEY = "path";
+
+// Mock decorator to simulate NestJS decorators behavior
+function CustomDecorator(value: string): MethodDecorator {
+  return (target: any, propertyKey: string | symbol, descriptor: PropertyDescriptor) => {
+    Reflect.defineMetadata(CUSTOM_METADATA_KEY, value, descriptor.value);
+    return descriptor;
+  };
+}
+
+function RouteDecorator(path: string): MethodDecorator {
+  return (target: any, propertyKey: string | symbol, descriptor: PropertyDescriptor) => {
+    Reflect.defineMetadata(ROUTE_METADATA_KEY, path, descriptor.value);
+    return descriptor;
+  };
+}
+
 describe("Redlock", () => {
   let client: Redis;
 
@@ -287,5 +306,177 @@ describe("Redlock", () => {
     ]);
 
     await app.close();
+  });
+
+  describe("Metadata Preservation", () => {
+    it("should preserve metadata when applied after other decorators", async () => {
+      class TestService {
+        @Redlock("test-metadata-1")
+        @CustomDecorator("custom-value")
+        @RouteDecorator("/api/test")
+        public async testMethodWithMetadata(): Promise<string> {
+          return "success";
+        }
+
+        @CustomDecorator("another-value")
+        @Redlock("test-metadata-2")
+        @RouteDecorator("/api/another")
+        public async anotherTestMethod(): Promise<string> {
+          return "another-success";
+        }
+      }
+
+      const app = await Test.createTestingModule({
+        imports: [
+          RedlockModule.register({
+            clients: [client],
+          }),
+        ],
+        providers: [TestService],
+        exports: [TestService],
+      }).compile();
+
+      const service = app.get(TestService);
+
+      // Test that the method works correctly
+      await expect(service.testMethodWithMetadata()).resolves.toBe("success");
+      await expect(service.anotherTestMethod()).resolves.toBe("another-success");
+
+      // Test that metadata is preserved
+      const testMethodDescriptor = Object.getOwnPropertyDescriptor(TestService.prototype, "testMethodWithMetadata");
+      const anotherMethodDescriptor = Object.getOwnPropertyDescriptor(TestService.prototype, "anotherTestMethod");
+
+      expect(testMethodDescriptor).toBeDefined();
+      expect(anotherMethodDescriptor).toBeDefined();
+
+      // Check that metadata is correctly preserved
+      const customMetadata1 = Reflect.getMetadata(CUSTOM_METADATA_KEY, testMethodDescriptor!.value);
+      const routeMetadata1 = Reflect.getMetadata(ROUTE_METADATA_KEY, testMethodDescriptor!.value);
+
+      const customMetadata2 = Reflect.getMetadata(CUSTOM_METADATA_KEY, anotherMethodDescriptor!.value);
+      const routeMetadata2 = Reflect.getMetadata(ROUTE_METADATA_KEY, anotherMethodDescriptor!.value);
+
+      expect(customMetadata1).toBe("custom-value");
+      expect(routeMetadata1).toBe("/api/test");
+      expect(customMetadata2).toBe("another-value");
+      expect(routeMetadata2).toBe("/api/another");
+
+      await app.close();
+    });
+
+    it("should preserve metadata when decorator is disabled", async () => {
+      class TestService {
+        @Redlock("test-disabled")
+        @CustomDecorator("disabled-value")
+        public async testDisabledMethod(): Promise<string> {
+          return "disabled-success";
+        }
+      }
+
+      const app = await Test.createTestingModule({
+        imports: [
+          RedlockModule.register({
+            clients: [client],
+            decoratorEnabled: false,
+          }),
+        ],
+        providers: [TestService],
+        exports: [TestService],
+      }).compile();
+
+      const service = app.get(TestService);
+
+      // Test that the method works correctly when disabled
+      await expect(service.testDisabledMethod()).resolves.toBe("disabled-success");
+
+      // Test that metadata is still preserved
+      const methodDescriptor = Object.getOwnPropertyDescriptor(TestService.prototype, "testDisabledMethod");
+      expect(methodDescriptor).toBeDefined();
+
+      const customMetadata = Reflect.getMetadata(CUSTOM_METADATA_KEY, methodDescriptor!.value);
+      expect(customMetadata).toBe("disabled-value");
+
+      await app.close();
+    });
+
+    it("should handle methods without existing metadata", async () => {
+      class TestService {
+        @Redlock("test-no-metadata")
+        public async testMethodNoMetadata(): Promise<string> {
+          return "no-metadata-success";
+        }
+      }
+
+      const app = await Test.createTestingModule({
+        imports: [
+          RedlockModule.register({
+            clients: [client],
+          }),
+        ],
+        providers: [TestService],
+        exports: [TestService],
+      }).compile();
+
+      const service = app.get(TestService);
+
+      // Test that the method works correctly
+      await expect(service.testMethodNoMetadata()).resolves.toBe("no-metadata-success");
+
+      // Test that no errors occur when there's no metadata to copy
+      const methodDescriptor = Object.getOwnPropertyDescriptor(TestService.prototype, "testMethodNoMetadata");
+      expect(methodDescriptor).toBeDefined();
+      expect(methodDescriptor!.value).toBeInstanceOf(Function);
+
+      await app.close();
+    });
+
+    it("should preserve all metadata keys", async () => {
+      const FIRST_KEY = Symbol("first");
+      const SECOND_KEY = Symbol("second");
+      const STRING_KEY = "string_key";
+
+      function MultipleMetadataDecorator(): MethodDecorator {
+        return (target: any, propertyKey: string | symbol, descriptor: PropertyDescriptor) => {
+          Reflect.defineMetadata(FIRST_KEY, "first-value", descriptor.value);
+          Reflect.defineMetadata(SECOND_KEY, { nested: "object" }, descriptor.value);
+          Reflect.defineMetadata(STRING_KEY, ["array", "value"], descriptor.value);
+          return descriptor;
+        };
+      }
+
+      class TestService {
+        @Redlock("test-multiple-metadata")
+        @MultipleMetadataDecorator()
+        public async testMultipleMetadata(): Promise<string> {
+          return "multiple-success";
+        }
+      }
+
+      const app = await Test.createTestingModule({
+        imports: [
+          RedlockModule.register({
+            clients: [client],
+          }),
+        ],
+        providers: [TestService],
+        exports: [TestService],
+      }).compile();
+
+      const service = app.get(TestService);
+      await expect(service.testMultipleMetadata()).resolves.toBe("multiple-success");
+
+      const methodDescriptor = Object.getOwnPropertyDescriptor(TestService.prototype, "testMultipleMetadata");
+      expect(methodDescriptor).toBeDefined();
+
+      const firstValue = Reflect.getMetadata(FIRST_KEY, methodDescriptor!.value);
+      const secondValue = Reflect.getMetadata(SECOND_KEY, methodDescriptor!.value);
+      const stringValue = Reflect.getMetadata(STRING_KEY, methodDescriptor!.value);
+
+      expect(firstValue).toBe("first-value");
+      expect(secondValue).toEqual({ nested: "object" });
+      expect(stringValue).toEqual(["array", "value"]);
+
+      await app.close();
+    });
   });
 });
