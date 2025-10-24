@@ -35,7 +35,7 @@
     "@lerna-lite/cli": "4.9.1",
     "@lerna-lite/publish": "4.9.1",
     "@types/jest": "29.5.14",
-    "@types/node": "22.18.11",
+    "@types/node": "22.18.12",
     "@types/supertest": "6.0.3",
     "eslint": "9.38.0",
     "husky": "9.1.7",
