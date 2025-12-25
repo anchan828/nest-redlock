@@ -28,10 +28,10 @@
     "redlock": "^5.0.0-beta.2"
   },
   "devDependencies": {
-    "@nestjs/common": "11.1.9",
-    "@nestjs/core": "11.1.9",
-    "@nestjs/platform-express": "11.1.9",
-    "@nestjs/testing": "11.1.9",
+    "@nestjs/common": "11.1.10",
+    "@nestjs/core": "11.1.10",
+    "@nestjs/platform-express": "11.1.10",
+    "@nestjs/testing": "11.1.10",
     "ioredis": "5.8.2",
     "reflect-metadata": "0.2.2",
     "rxjs": "7.8.2"
